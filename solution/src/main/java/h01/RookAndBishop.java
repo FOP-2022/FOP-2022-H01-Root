@@ -7,7 +7,6 @@ import fopbot.World;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static fopbot.Direction.*;
-import static fopbot.Direction.LEFT;
 
 public class RookAndBishop {
   private final int NUMBER_OF_ROWS;
