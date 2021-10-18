@@ -54,7 +54,7 @@ public class TutorTests {
     rows.addAll(fours);
     traces = new ArrayList<>();
     for (var i = 0; i < RUNS; i++) {
-      var environment = new Task1.RookAndBishop(rows.get(i), columns.get(i), 0, false);
+      var environment = new RookAndBishop(rows.get(i), columns.get(i), 0, false);
       try {
         environment.execute();
       } catch (Exception e) {
