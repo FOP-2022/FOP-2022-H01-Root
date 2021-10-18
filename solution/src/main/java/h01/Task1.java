@@ -1,12 +1,13 @@
-package H01;
+package h01;
 
-import fopbot.*;
-import H01.misc.PropertyConverter;
-import H01.misc.PropertyException;
+import fopbot.World;
+import h01.misc.PropertyConverter;
+import h01.misc.PropertyException;
 
-import java.io.*;
-
-import static fopbot.Direction.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * Task 1 of Hausuebung01 of "Funktionale und objektorientierte
@@ -45,7 +46,6 @@ public class Task1 {
     var environment = new RookAndBishop();
     environment.execute();
   }
-
 
   static void initializeTask(int numberOfRows, int numberOfColumns, int delay, boolean uiVisible) {
     World.setSize(numberOfColumns, numberOfRows);

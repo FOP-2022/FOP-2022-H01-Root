@@ -1,4 +1,4 @@
-package H01;
+package h01;
 
 /*
 Thank you to https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Java

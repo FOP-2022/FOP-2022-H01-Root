@@ -1,4 +1,4 @@
-package H01;
+package h01;
 
 import fopbot.Direction;
 import fopbot.Robot;

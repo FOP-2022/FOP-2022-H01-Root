@@ -1,8 +1,7 @@
-package H01;
+package h01;
 
 import fopbot.Robot;
 import fopbot.RobotTrace;
-
 
 public class Task1Trace {
 

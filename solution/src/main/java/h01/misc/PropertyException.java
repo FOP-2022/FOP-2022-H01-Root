@@ -1,4 +1,4 @@
-package H01.misc;
+package h01.misc;
 
 public class PropertyException extends RuntimeException {
   private static final long serialVersionUID = 1L;

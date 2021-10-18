@@ -1,4 +1,4 @@
-package H01;
+package h01;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,7 +18,7 @@ import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 /**
  * @author Thomas Rothenbächer
  */
-@TestForSubmission("H01")
+@TestForSubmission("h01")
 public class TutorTests {
   private static final int RUNS = 100;
   private static final String BISHOP_WIN = "ufer";
@@ -276,8 +276,6 @@ public class TutorTests {
         cur = rook.get(j + 1).robot;
       }
     }
-
-
   }
 
   @Test

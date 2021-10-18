@@ -7,4 +7,3 @@ dependencies {
   implementation(project(":solution"))
   implementation("org.sourcegrade:fopbot:0.1.0-SNAPSHOT")
 }
-

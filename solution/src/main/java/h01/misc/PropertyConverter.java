@@ -1,4 +1,4 @@
-package H01.misc;
+package h01.misc;
 
 @FunctionalInterface
 public interface PropertyConverter<T> {

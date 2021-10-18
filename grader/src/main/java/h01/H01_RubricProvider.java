@@ -1,8 +1,8 @@
-package H01;
+package h01;
 
 import org.sourcegrade.jagr.api.rubric.*;
 
-@RubricForSubmission("H01")
+@RubricForSubmission("h01")
 public class H01_RubricProvider implements RubricProvider {
   /*---------------------------------- H1 ------------------------------------*/
   public static final Criterion H1_T1 = Criterion.builder()
@@ -195,7 +195,7 @@ public class H01_RubricProvider implements RubricProvider {
 
 
   public static final Rubric RUBRIC = Rubric.builder()
-    .title("H01")
+    .title("h01")
     .addChildCriteria(H1, H3_1, H3_2, H3_3)
     .build();
 
