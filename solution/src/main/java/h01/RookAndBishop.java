@@ -111,9 +111,6 @@ public class RookAndBishop {
    */
   private void bishopMovement(Robot rook, Robot bishop) {
     boolean notFinished = true;
-    if (bishop.getX() == rook.getX() && bishop.getY() == rook.getY()) {
-      notFinished = false;
-    }
     while (notFinished) {
       if (canMove(bishop)) {
         bishop.move();

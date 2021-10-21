@@ -7,10 +7,21 @@ public class Task1Trace {
 
   RobotTrace rook;
   RobotTrace bishop;
+  int width;
+  int height;
+  Exception e;
 
-  public Task1Trace(RobotTrace rook, RobotTrace bishop) {
+  public Task1Trace(Exception e, int width, int height) {
+    this.e = e;
+    this.width = width;
+    this.height = height;
+  }
+
+  public Task1Trace(RobotTrace rook, RobotTrace bishop, int width, int height) {
     this.rook = rook;
     this.bishop = bishop;
+    this.width = width;
+    this.height = height;
   }
 
   public Robot bishopInitial() {
