@@ -107,7 +107,6 @@ public class RookAndBishop {
     }
   }
 
-
   /**
    * Exercise 3.2 of H01
    */

@@ -153,7 +153,6 @@ public class H01_RubricProvider implements RubricProvider {
       .build()
     ).build();
 
-
   public static final Criterion H1 = Criterion.builder()
     .shortDescription("H1 – Initialisieren vor der Hauptschleife")
     .addChildCriteria(
@@ -163,7 +162,6 @@ public class H01_RubricProvider implements RubricProvider {
       H1_correct
     )
     .build();
-
 
   public static final Criterion H3_1 = Criterion.builder()
     .shortDescription("H3.1 – Bewegung von Rook")
@@ -192,7 +190,6 @@ public class H01_RubricProvider implements RubricProvider {
       H3_3_T3
     )
     .build();
-
 
   public static final Rubric RUBRIC = Rubric.builder()
     .title("h01")

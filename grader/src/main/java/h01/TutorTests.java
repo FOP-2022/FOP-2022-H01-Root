@@ -304,7 +304,6 @@ public class TutorTests {
     checkDistributionRook(turnCanNotMove, expectedCanNotMove, turns, cantMoveFreely);
   }
 
-
   private void checkDistributionInit(int[] actual, double[] expected, String[] classes, String distribution) {
     String elementTemplate = "There were unusually %s %s in a 4x4 World; Expected: %f Got: %d";
     String chiTestTemplate = "The distribution of " + distribution + " did not match well in a 4x4 World. Expected: %s Got: %s";
@@ -394,7 +393,6 @@ public class TutorTests {
         }
         cur = bishop.get(j + 1).robot;
       }
-
     }
   }
 
