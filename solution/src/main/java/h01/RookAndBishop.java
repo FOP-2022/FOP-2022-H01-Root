@@ -97,7 +97,9 @@ public class RookAndBishop {
         rook.turnLeft();
       }
     }
-    if (turn == 1) rook.turnLeft();
+    if (turn == 1) {
+      rook.turnLeft();
+    }
     if (turn == 0) {
       rook.turnLeft();
       rook.turnLeft();
