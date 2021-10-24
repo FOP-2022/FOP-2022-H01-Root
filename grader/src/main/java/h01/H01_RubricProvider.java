@@ -1,6 +1,10 @@
 package h01;
 
 import org.sourcegrade.jagr.api.rubric.*;
+import org.sourcegrade.jagr.api.testing.RubricConfiguration;
+import org.sourcegrade.testbyte.ReplacementTransformerKt;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 @RubricForSubmission("h01")
 public class H01_RubricProvider implements RubricProvider {
@@ -199,5 +203,10 @@ public class H01_RubricProvider implements RubricProvider {
   @Override
   public Rubric getRubric() {
     return RUBRIC;
+  }
+
+  @Override
+  public void configure(RubricConfiguration configuration) {
+    configuration.addTransformer(ReplacementTransformerKt.create(ThreadLocalRandomTester.class, ThreadLocalRandom.class));
   }
 }

@@ -58,6 +58,7 @@ public class TutorTests {
 
   @BeforeAll
   static void initTest() {
+    ThreadLocalRandomTester.initialize();
     System.setOut(new PrintStream(outContent));
     columns.addAll(eights);
     rows.addAll(eights);
