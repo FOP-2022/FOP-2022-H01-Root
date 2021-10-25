@@ -181,8 +181,15 @@ public class TutorTests {
   }
 
   @Test
-  @DisplayName("HX_T1 | Exceptions_During_Run")
-  public void HX_T1() {
+  @DisplayName("HX_LOW | Exceptions_During_Run")
+  public void HX_LOW() {
+    var workingRuns = allTraces.stream().filter(trace -> trace.e == null).count() >= 30;
+    assertTrue(workingRuns, "Only " + workingRuns + "/100 ran successfully. Remember your code has to run with any World Size.");
+  }
+
+  @Test
+  @DisplayName("HX_HIGH | Exceptions_During_Run")
+  public void HX_HIGH() {
     for (var trace : allTraces) {
       assertNull(trace.e, new RuntimeException(String.format("At least one of the test runs failed. This run had this World Size:" +
         " {width/NUMBER_OF_COLUMNS=%d, height/NUMBER_OF_ROWS=%d}", trace.width, trace.height), trace.e).toString());
@@ -352,9 +359,26 @@ public class TutorTests {
   }
 
   @Test
-  @DisplayName("H3_2_T2 | Bishop_Moves_Correctly")
-  public void H3_2_T2() {
+  @DisplayName("H3_2_T2_1 | Bishop_Moves_Correctly")
+  public void H3_2_T2_1() {
     flagFailure(false);
+    bishopMovesCorrectly(false);
+  }
+
+  @Test
+  @DisplayName("H3_2_T2_1 | Bishop_Moves_Correctly")
+  public void H3_2_T2_2() {
+    flagFailure(false);
+    bishopMovesCorrectly(true);
+  }
+
+  /**
+   * Verifies correct function of bishop (excluding interactions with coins)
+   * @param inverted if true assumes move -> turn right -> move -> turn left instead of the detailed description
+   */
+  private void bishopMovesCorrectly(boolean inverted) {
+    var rightTurn = inverted ? 1 : 3;
+    var leftTurn = inverted ? 3 : 1;
     for (Task1Trace trace : traces) {
       int col = trace.width;
       int row = trace.height;
@@ -376,7 +400,7 @@ public class TutorTests {
           if (canMove(cur, col, row)) {
             fail("Although Bishop could move after doing its expected turns, it kept on turning.");
           } else {
-            expectedTurns = isSecondStep ? 2 : 1;
+            expectedTurns = isSecondStep ? 2 : leftTurn;
             isSecondStep = false;
           }
         }
@@ -386,7 +410,7 @@ public class TutorTests {
         priorState = state;
         assertEquals(state, t.action, "Different next action then expected for bishop: " + t.toString());
         if (t.action == Transition.RobotAction.MOVE) {
-          expectedTurns = isSecondStep ? 3 : !canMove(cur, col, row) ? 3 : 1;
+          expectedTurns = isSecondStep ? rightTurn : !canMove(cur, col, row) ? rightTurn : leftTurn;
           isSecondStep = !isSecondStep;
           state = Transition.RobotAction.TURN_LEFT;
         } else {
@@ -394,16 +418,31 @@ public class TutorTests {
         }
         cur = bishop.get(j + 1).robot;
       }
-
     }
   }
 
   @Test
-  @DisplayName("H3_2_T3 | Bishop_Acts_Correctly")
-  public void H3_2_T3() {
+  @DisplayName("H3_2_T3_1 | Bishop_Acts_Correctly")
+  public void H3_2_T3_1() {
     flagFailure(false);
-    for (int i = 0; i < traces.size(); i++) {
-      Task1Trace trace = traces.get(i);
+    bishopActsCorrectly(false);
+  }
+  @Test
+  @DisplayName("H3_2_T3_2 | Bishop_Acts_Correctly")
+  public void H3_2_T3_2() {
+    flagFailure(false);
+    bishopActsCorrectly(true);
+  }
+
+
+  /**
+   * Verifies correct function of bishop (including interactions with coins)
+   * @param inverted if true assumes move -> turn right -> move -> turn left instead of the detailed description
+   */
+  private void bishopActsCorrectly(boolean inverted) {
+    var rightTurn = inverted ? 1 : 3;
+    var leftTurn = inverted ? 3 : 1;
+    for (Task1Trace trace : traces) {
       int col = trace.width;
       int row = trace.height;
       var consecutiveRook = 0;
@@ -445,7 +484,7 @@ public class TutorTests {
           if (canMove(cur, col, row)) {
             fail("Although Bishop could move after doing its expected turns, it kept on turning.");
           } else {
-            expectedTurns = isSecondStep ? 2 : 1;
+            expectedTurns = isSecondStep ? 2 : leftTurn;
             isSecondStep = false;
           }
         }
@@ -455,7 +494,7 @@ public class TutorTests {
         priorState = state;
         assertEquals(state, t.action, "Different next action then expected for bishop: " + t.toString());
         if (t.action == Transition.RobotAction.MOVE) {
-          expectedTurns = isSecondStep ? 3 : !canMove(cur, col, row) ? 3 : 1;
+          expectedTurns = isSecondStep ? rightTurn : !canMove(cur, col, row) ? rightTurn : leftTurn;
           isSecondStep = !isSecondStep;
           state = Transition.RobotAction.TURN_LEFT;
         } else if (t.action == Transition.RobotAction.TURN_LEFT) {
