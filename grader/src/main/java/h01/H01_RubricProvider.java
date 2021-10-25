@@ -2,7 +2,7 @@ package h01;
 
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
-import org.sourcegrade.testbyte.ReplacementTransformerKt;
+import org.sourcegrade.insnreplacer.ReplacementTransformerKt;
 
 import java.util.concurrent.ThreadLocalRandom;
 
