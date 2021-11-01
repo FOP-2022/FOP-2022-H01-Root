@@ -1,6 +1,6 @@
 package h01;
 
-import org.sourcegrade.testbyte.ThreadLocalInstanceFactory;
+import org.sourcegrade.insnreplacer.ThreadLocalInstanceFactory;
 
 import java.util.concurrent.ThreadLocalRandom;
 
