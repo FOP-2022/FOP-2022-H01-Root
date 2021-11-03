@@ -5,10 +5,9 @@ allprojects {
   apply(plugin = "java")
   repositories {
     mavenCentral()
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
   }
   dependencies {
-    implementation("org.sourcegrade:fopbot:0.1.0-SNAPSHOT")
+    implementation("org.sourcegrade:fopbot:0.1.0")
   }
   java {
     sourceCompatibility = JavaVersion.VERSION_11
