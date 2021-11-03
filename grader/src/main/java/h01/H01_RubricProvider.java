@@ -4,6 +4,7 @@ import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.sourcegrade.insnreplacer.ReplacementTransformerKt;
 
+import javax.swing.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RubricForSubmission("h01")
