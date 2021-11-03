@@ -58,15 +58,14 @@ public class Task1 {
 
   static <T> T readProperty(String key, PropertyConverter<T> converter) {
     String value = null;
-    var loader = Task1.class.getClassLoader();
-    try (InputStream inputStream = loader.getResourceAsStream(FOPBOT_PROPERTIES)) {
+    try (InputStream inputStream = Task1.class.getResourceAsStream(FOPBOT_PROPERTIES)) {
       if (inputStream == null) {
         throw new PropertyException(String.format("Die Property-Datei mit Namen %s " +
           "konnte nicht gefunden werden.", FOPBOT_PROPERTIES));
       }
       try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
            BufferedReader br = new BufferedReader(inputStreamReader)) {
-        String line = null;
+        String line;
         while ((line = br.readLine()) != null) {
           if (line.startsWith(key)) {
             var split = line.split("=");
@@ -83,8 +82,7 @@ public class Task1 {
       throw new PropertyException("Die Property-Datei konnte nicht gelesen werden.", e);
     }
     if (value == null) {
-      throw new PropertyException(String.format("Der gesuchte Schlüssel %s konnte in der Datei nicht gefunden werden.",
-        key));
+      throw new PropertyException(String.format("Der gesuchte Schlüssel %s konnte in der Datei nicht gefunden werden.", key));
     }
     return converter.convert(value);
   }
