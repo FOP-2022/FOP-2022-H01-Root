@@ -5,6 +5,7 @@ import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 
 import org.sourcegrade.insnreplacer.ReplacementTransformerKt;
 
+import javax.swing.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RubricForSubmission("h01")
@@ -209,5 +210,6 @@ public class H01_RubricProvider implements RubricProvider {
   @Override
   public void configure(RubricConfiguration configuration) {
     configuration.addTransformer(ReplacementTransformerKt.create(ThreadLocalRandomTester.class, ThreadLocalRandom.class));
+    configuration.addTransformer(ReplacementTransformerKt.create(JOptionPaneTester.class, JOptionPane.class));
   }
 }
