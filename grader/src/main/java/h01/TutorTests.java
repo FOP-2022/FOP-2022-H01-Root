@@ -2,7 +2,6 @@ package h01;
 
 import fopbot.*;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
@@ -56,8 +55,13 @@ public class TutorTests {
   static int[] turnCanMove = new int[4];
   static int[] turnCanNotMove = new int[4];
 
-  @BeforeAll
+  private static boolean isInitTest = false;
+
   static void initTest() {
+    if (isInitTest) {
+      return;
+    }
+    isInitTest = true;
     ThreadLocalRandomTester.initialize();
     System.setOut(new PrintStream(outContent));
     columns.addAll(eights);
@@ -184,6 +188,7 @@ public class TutorTests {
   @Test
   @DisplayName("HX_LOW | Exceptions_During_Run")
   public void HX_LOW() {
+    initTest();
     var workingRuns = allTraces.stream().filter(trace -> trace.e == null).count() >= 30;
     assertTrue(workingRuns, "Only " + workingRuns + "/100 ran successfully. Remember your code has to run with any World Size.");
   }
@@ -191,6 +196,7 @@ public class TutorTests {
   @Test
   @DisplayName("HX_HIGH | Exceptions_During_Run")
   public void HX_HIGH() {
+    initTest();
     for (var trace : allTraces) {
       assertNull(trace.e, new RuntimeException(String.format("At least one of the test runs failed. This run had this World Size:" +
         " {width/NUMBER_OF_COLUMNS=%d, height/NUMBER_OF_ROWS=%d}", trace.width, trace.height), trace.e).toString());
@@ -200,6 +206,7 @@ public class TutorTests {
   @Test
   @DisplayName("H1_T1 | Init_Muenzen")
   public void H1_T1() {
+    initTest();
     for (var trace : traces) {
       assertEquals(0, trace.bishopInitial().getNumberOfCoins(), "Bishop does not have 0 coins.");
       assertTrue(trace.rookInitial().getNumberOfCoins() >= 12, "Rook has less than 12 coins");
@@ -210,6 +217,7 @@ public class TutorTests {
   @Test
   @DisplayName("H1_T2 | Init_Positionen")
   public void H1_T2() {
+    initTest();
     var sz = traces.stream().filter(trace -> trace.height == 4 && trace.width == 4).count();
     String[] classesSpawn = new String[]{"robot-creations at coordinate 0", "robot-creations at coordinate 1",
       "robot-creations at coordinate 2", "robot-creations at coordinate 3"};
@@ -221,6 +229,7 @@ public class TutorTests {
 
   @Test
   public void H1_T3() {
+    initTest();
     var sz = traces.size();
     var divider = 2.0;
     var expectedSpawn = new double[]{sz / divider, sz / divider, sz / divider, sz / divider};
@@ -250,6 +259,7 @@ public class TutorTests {
   @Test
   @DisplayName("H3_1_T1 | Rook_Moves")
   public void H3_1_T1() {
+    initTest();
     for (Task1Trace trace : traces) {
       assertFalse(trace.rook.getTransitions().isEmpty(), "Rook did not do any actions.");
     }
@@ -258,6 +268,7 @@ public class TutorTests {
   @Test
   @DisplayName("H3_1_T2 | Rook_Drops_Coins_And_Moves")
   public void H3_1_T2() {
+    initTest();
     flagFailure(true);
     for (Task1Trace trace : traces) {
       assertFalse(trace.rook.getTransitions().isEmpty(), "Rook did not do any actions.");
@@ -298,6 +309,7 @@ public class TutorTests {
   @Test
   @DisplayName("H3_1_T3 | Rook_Turns_Correctly")
   public void H3_1_T3() {
+    initTest();
     flagFailure(true);
     String[] turns = new String[]{"moves without turns", "left-turns", "turns of 180� degrees", "right-turns"};
     String moveFreely = "move freely";
@@ -338,6 +350,7 @@ public class TutorTests {
   @Test
   @DisplayName("H3_2_T1 | Bishop_Moves")
   public void H3_2_T1() {
+    initTest();
     for (Task1Trace trace : traces) {
       var consecutiveRook = 0;
       var curBishopIndex = 0;
@@ -361,6 +374,7 @@ public class TutorTests {
   @Test
   @DisplayName("H3_2_T2_1 | Bishop_Moves_Correctly")
   public void H3_2_T2_1() {
+    initTest();
     flagFailure(false);
     bishopMovesCorrectly(false);
   }
@@ -368,6 +382,7 @@ public class TutorTests {
   @Test
   @DisplayName("H3_2_T2_1 | Bishop_Moves_Correctly")
   public void H3_2_T2_2() {
+    initTest();
     flagFailure(false);
     bishopMovesCorrectly(true);
   }
@@ -424,12 +439,14 @@ public class TutorTests {
   @Test
   @DisplayName("H3_2_T3_1 | Bishop_Acts_Correctly")
   public void H3_2_T3_1() {
+    initTest();
     flagFailure(false);
     bishopActsCorrectly(false);
   }
   @Test
   @DisplayName("H3_2_T3_2 | Bishop_Acts_Correctly")
   public void H3_2_T3_2() {
+    initTest();
     flagFailure(false);
     bishopActsCorrectly(true);
   }
@@ -513,6 +530,7 @@ public class TutorTests {
   @Test
   @DisplayName("H3_3_T1 | End_Upon_Meeting")
   public void H3_3_T1() {
+    initTest();
     flagFailure(false);
     List<Task1Trace> transitionTraces = traces.subList(0, RUNS_WITH_TRANSITION);
     for (var trace : transitionTraces) {
@@ -553,6 +571,7 @@ public class TutorTests {
   @Test
   @DisplayName("H3_3_T2 | End_Upon_Dropping_All_Coins")
   public void H3_3_T2() {
+    initTest();
     flagFailure(false);
     List<Task1Trace> transitionTraces = traces.subList(0, RUNS_WITH_TRANSITION);
     for (var trace : transitionTraces) {
@@ -567,6 +586,7 @@ public class TutorTests {
   @Test
   @DisplayName("H3_3_T3 | End_Messages")
   public void H3_3_T3() {
+    initTest();
     flagFailure(false);
     List<Task1Trace> transitionTraces = traces.subList(0, RUNS_WITH_TRANSITION);
     String out = outContent.toString();
