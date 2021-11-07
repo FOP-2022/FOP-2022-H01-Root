@@ -16,8 +16,7 @@ public class Range {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Range range = (Range) o;
-    return low == range.low &&
-      up == range.up;
+    return low == range.low && up == range.up;
   }
 
   @Override
