@@ -33,7 +33,7 @@ public class Task1 {
     }
   };
 
-  private static final String FOPBOT_PROPERTIES = "fopbot.properties";
+  private static final String FOPBOT_PROPERTIES = "/fopbot.properties";
 
   /**
    * Method which makes Java code runnable as a program. For this task the main
