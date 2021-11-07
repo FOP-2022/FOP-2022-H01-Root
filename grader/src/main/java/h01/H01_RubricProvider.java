@@ -106,8 +106,10 @@ public class H01_RubricProvider implements RubricProvider {
   public static final Criterion H3_2_T2 = Criterion.builder()
     .shortDescription("Der Läufer bewegt sich diagonal, wie gefordert")
     .grader(Grader.testAwareBuilder()
-      .requirePass(JUnitTestRef.ofMethod(() ->
-        TutorTests.class.getMethod("H3_2_T2")))
+      .requirePass(JUnitTestRef.or(
+        JUnitTestRef.ofMethod(() -> TutorTests.class.getMethod("H3_2_T2_1")),
+        JUnitTestRef.ofMethod(() -> TutorTests.class.getMethod("H3_2_T2_2"))
+      ))
       .pointsPassedMax()
       .pointsFailedMin()
       .build()
@@ -116,8 +118,10 @@ public class H01_RubricProvider implements RubricProvider {
   public static final Criterion H3_2_T3 = Criterion.builder()
     .shortDescription("Der Läufer verhält sich so wie erwartet, einschließlich dem Einsammeln von Münzen und daraufhin anhalten")
     .grader(Grader.testAwareBuilder()
-      .requirePass(JUnitTestRef.ofMethod(() ->
-        TutorTests.class.getMethod("H3_2_T3")))
+      .requirePass(JUnitTestRef.or(
+        JUnitTestRef.ofMethod(() -> TutorTests.class.getMethod("H3_2_T3_1")),
+        JUnitTestRef.ofMethod(() -> TutorTests.class.getMethod("H3_2_T3_2"))
+      ))
       .pointsPassedMax()
       .pointsFailedMin()
       .build()
@@ -152,6 +156,40 @@ public class H01_RubricProvider implements RubricProvider {
       .pointsFailedMin()
       .build()
     ).build();
+
+
+  public static final Criterion HX_LOW = Criterion.builder()
+    .shortDescription("Von 100 Test Runs laufen mindestens 30 ohne Exceptions")
+    .maxPoints(0)
+    .minPoints(-2)
+    .grader(Grader.testAwareBuilder()
+      .requirePass(JUnitTestRef.ofMethod(() ->
+        TutorTests.class.getMethod("HX_LOW")))
+      .pointsPassedMax()
+      .pointsFailedMin()
+      .build()
+    ).build();
+
+  public static final Criterion HX_HIGH = Criterion.builder()
+    .shortDescription("Alle 100 Test Runs laufen ohne Exceptions")
+    .maxPoints(0)
+    .minPoints(-1)
+    .grader(Grader.testAwareBuilder()
+      .requirePass(JUnitTestRef.ofMethod(() ->
+        TutorTests.class.getMethod("HX_HIGH")))
+      .pointsPassedMax()
+      .pointsFailedMin()
+      .build()
+    ).build();
+
+  public static final Criterion HX = Criterion.builder()
+    .shortDescription("HX – Execute Erfolgreich Ausführbar: D.h. ohne Initialisierungen außerhalb der World, ohne Crashes, usw.")
+    .addChildCriteria(
+      HX_LOW,
+      HX_HIGH
+    )
+    .build();
+
 
   public static final Criterion H1 = Criterion.builder()
     .shortDescription("H1 – Initialisieren vor der Hauptschleife")
@@ -193,7 +231,7 @@ public class H01_RubricProvider implements RubricProvider {
 
   public static final Rubric RUBRIC = Rubric.builder()
     .title("h01")
-    .addChildCriteria(H1, H3_1, H3_2, H3_3)
+    .addChildCriteria(HX, H1, H3_1, H3_2, H3_3)
     .build();
 
   @Override
