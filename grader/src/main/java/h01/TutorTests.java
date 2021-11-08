@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -94,19 +91,8 @@ public class TutorTests {
     traces = new ArrayList<>();
     for (var i = 0; i < RUNS; i++) {
       var environment = new RookAndBishop(rows.get(i), columns.get(i), 0, false);
-      var executor = Executors.newCachedThreadPool();
-      Callable<Object> task = () -> {
-        environment.execute();
-        return 1;
-      };
       try {
-        var future = executor.submit(task);
-        for (int ch = 0; ch < 50; ch++) {
-          if (!future.isDone()) {
-            Thread.sleep(20);
-          }
-        }
-        future.get(10, TimeUnit.MILLISECONDS);
+        environment.execute();
         var robots = getRobots(World.getGlobalWorld());
         if (robots.size() == 0) {
           traces.add(new Task1Trace(null, columns.get(i), rows.get(i)));
@@ -117,17 +103,7 @@ public class TutorTests {
         var trace = fillTrace(robots, columns.get(i), rows.get(i));
         traces.add(trace);
       } catch (Exception e) {
-        RookAndBishop secEnvironment = new RookAndBishop(rows.get(i), columns.get(i), 0, false);
-        var tutorEnvironment = new TutorRookAndBishop(secEnvironment, columns.get(i), rows.get(i), null, null);
-        try {
-          tutorEnvironment.init();
-          tutorEnvironment.execute();
-          var robots = getRobots(World.getGlobalWorld());
-          var trace = fillTrace(robots, columns.get(i), rows.get(i));
-          traces.add(trace);
-        } catch (Exception e2) {
-          traces.add(new Task1Trace(e2, columns.get(i), rows.get(i)));
-        }
+        traces.add(new Task1Trace(e, columns.get(i), rows.get(i)));
       }
     }
     var workingTraces = traces.stream().filter(trace -> trace.e == null).collect(Collectors.toList());
