@@ -1,14 +1,20 @@
 package h01;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class ThreadLocalRange {
+  private List<Integer> sequence;
   int low;
   int up;
-  int maxRepetition;
+  int maxRepetition; // unused
   int currentNumber;
   int currentRepetition;
 
   public ThreadLocalRange(int low, int up) {
-    this(low, up, 3);
+    this(low, up, 1);
   }
 
   public ThreadLocalRange(int low, int up, int maxRepetition) {
@@ -17,9 +23,10 @@ public class ThreadLocalRange {
     }
     this.low = low;
     this.up = up;
-    this.maxRepetition = maxRepetition;
-    this.currentNumber = low;
+    this.currentNumber = 0;
     this.currentRepetition = 0;
+    this.sequence = IntStream.range(low, up).boxed().collect(Collectors.toList());
+    Collections.shuffle(this.sequence);
   }
 
   public ThreadLocalRange(Range range) {
@@ -27,19 +34,14 @@ public class ThreadLocalRange {
   }
 
   public int next() {
-    if (this.up <= this.low) {
-      throw new IllegalArgumentException("ThreadLocalRandom.current().nextInt-Aufruf mit " +
-        "oberer Schranke <= unterer Schranke");
-    }
-    var result = currentNumber;
-    currentRepetition += 1;
-    if (currentRepetition == maxRepetition) {
-      currentNumber += 1;
-      currentRepetition = 0;
-      if (currentNumber == up) {
-        currentNumber = low;
-      }
+    var result = sequence.get(currentNumber++);
+    if (currentNumber == sequence.size()) {
+      this.currentNumber = 0;
+      this.sequence = IntStream.range(low, up).boxed().collect(Collectors.toList());
+      Collections.shuffle(this.sequence);
     }
     return result;
   }
 }
+
+

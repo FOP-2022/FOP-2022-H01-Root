@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,16 +27,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestForSubmission("h01")
 public class TutorTests {
   private static final int RUNS = 100;
-  private static final String BISHOP_WIN = "ufer";
+  private static final String BISHOP_WIN = "fer";
   private static final String ROOK_WIN = "Turm";
   private static final double chi10percent3df = 6.251;
   private static final double chi2percent3df = 9.837;
   private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
   private static final PrintStream originalOut = System.out;
-  static List<Integer> columns = new ArrayList<>(List.of(12, 10, 11, 1, 3, 5, 8, 7, 9, 13, 10, 11, 1, 13, 11, 7, 6));
+  static List<Integer> columns = new ArrayList<>(List.of(6, 10, 13, 1, 3, 5, 8, 7, 9, 13, 10, 11, 1, 13, 11, 7, 6));
   private static final int RUNS_WITH_TRANSITION = columns.size();
   private static final int RUNS_WITH_EIGHT = 30;
-  static List<Integer> rows = new ArrayList<>(List.of(11, 10, 8, 1, 1, 13, 11, 7, 6, 10, 13, 11, 7, 10, 11, 1, 6));
+  static List<Integer> rows = new ArrayList<>(List.of(4, 10, 8, 1, 1, 13, 11, 7, 6, 10, 13, 11, 7, 10, 11, 1, 6));
   static List<Integer> eights = Stream.generate(() -> 8)
     .limit(RUNS_WITH_EIGHT)
     .collect(Collectors.toList());
@@ -67,7 +67,6 @@ public class TutorTests {
     }
     isInitTest = true;
     ThreadLocalRandomTester.initialize();
-    System.setOut(new PrintStream(outContent));
     columns.addAll(eights);
     rows.addAll(eights);
     columns.addAll(fours);
@@ -76,26 +75,38 @@ public class TutorTests {
     for (var i = 0; i < 5; i++) {
       var environment = new RookAndBishop(8, 8, 0, false);
       try {
-      environment.execute();
-      var robots = getRobots(World.getGlobalWorld());
-      if (robots.size() == 0) {
-        preTraces.add(new Task1Trace(null, columns.get(i), rows.get(i)));
-      }
-      var trace = fillTrace(robots, columns.get(i), rows.get(i));
-      preTraces.add(trace);
+        environment.execute();
+        var robots = getRobots(World.getGlobalWorld());
+        if (robots.size() == 0) {
+          preTraces.add(new Task1Trace(null, columns.get(i), rows.get(i)));
+        }
+        var trace = fillTrace(robots, columns.get(i), rows.get(i));
+        preTraces.add(trace);
       } catch (Exception ignored) {
       }
     }
     if (!preTraces.isEmpty() && preTraces.stream().anyMatch(trace -> trace.bishop.getTransitions().size() > 40) &&
       preTraces.stream().map(trace -> trace.bishop.getTransitions().size()).reduce(0, Integer::sum)
-      < preTraces.stream().map(trace -> trace.rook.getTransitions().size()).reduce(0, Integer::sum)) {
+        < preTraces.stream().map(trace -> trace.rook.getTransitions().size()).reduce(0, Integer::sum)) {
       bishopFirstInitialized = true;
     }
+    System.setOut(new PrintStream(outContent));
     traces = new ArrayList<>();
     for (var i = 0; i < RUNS; i++) {
       var environment = new RookAndBishop(rows.get(i), columns.get(i), 0, false);
-      try {
+      var executor = Executors.newCachedThreadPool();
+      Callable<Object> task = () -> {
         environment.execute();
+        return 1;
+      };
+      try {
+        var future = executor.submit(task);
+        for (int ch = 0; ch < 50; ch++) {
+          if (!future.isDone()) {
+            Thread.sleep(20);
+          }
+        }
+        future.get(10, TimeUnit.MILLISECONDS);
         var robots = getRobots(World.getGlobalWorld());
         if (robots.size() == 0) {
           traces.add(new Task1Trace(null, columns.get(i), rows.get(i)));
@@ -106,8 +117,6 @@ public class TutorTests {
         var trace = fillTrace(robots, columns.get(i), rows.get(i));
         traces.add(trace);
       } catch (Exception e) {
-        var trace = fillTrace(getRobots(World.getGlobalWorld()), columns.get(i), rows.get(i));
-        trace.e = e;
         traces.add(new Task1Trace(e, columns.get(i), rows.get(i)));
       }
     }
@@ -224,6 +233,9 @@ public class TutorTests {
   @DisplayName("HX_HIGH | Exceptions_During_Run")
   public void HX_HIGH() {
     initTest();
+    if (allTraces.size() < RUNS_WITH_EIGHT * 5 / 6) {
+      fail("There are many failed test runs.");
+    }
     for (var trace : allTraces) {
       assertNull(trace.e, new RuntimeException(String.format("At least one of the test runs failed. This run had this World Size:" +
         " {width/NUMBER_OF_COLUMNS=%d, height/NUMBER_OF_ROWS=%d}", trace.width, trace.height), trace.e).toString());
@@ -234,7 +246,10 @@ public class TutorTests {
   @DisplayName("H1_T1 | Init_Muenzen")
   public void H1_T1() {
     initTest();
-    for (var trace : traces) {
+    if (defaultSizeTraces.size() < RUNS_WITH_EIGHT * 5 / 6) {
+      fail("Not enough test runs were successful (even with the default 8x8 world size) to evaluate the robots behavior");
+    }
+    for (Task1Trace trace : defaultSizeTraces) {
       assertEquals(0, trace.bishopInitial().getNumberOfCoins(), "Bishop does not have 0 coins.");
       assertTrue(trace.rookInitial().getNumberOfCoins() >= 12, "Rook has less than 12 coins");
       assertTrue(trace.rookInitial().getNumberOfCoins() <= 20, "Rook has more than 20 coins");
@@ -246,6 +261,9 @@ public class TutorTests {
   public void H1_T2() {
     initTest();
     var sz = traces.stream().filter(trace -> trace.height == 4 && trace.width == 4).count();
+    if (sz == 0) {
+      fail("No test run was successful. Init Positions could not be tested.");
+    }
     String[] classesSpawn = new String[]{"robot-creations at coordinate 0", "robot-creations at coordinate 1",
       "robot-creations at coordinate 2", "robot-creations at coordinate 3"};
     var divider = 2.0;
@@ -260,6 +278,9 @@ public class TutorTests {
     var sz = traces.size();
     var divider = 2.0;
     var expectedSpawn = new double[]{sz / divider, sz / divider, sz / divider, sz / divider};
+    if (sz == 0) {
+      fail("No test run was successful. Init Positions could not be tested.");
+    }
     String[] classesDirection = Arrays.stream(Direction.values())
       .map(direction -> "robot-creations with direction " + direction.toString())
       .toArray(String[]::new);
@@ -287,7 +308,10 @@ public class TutorTests {
   @DisplayName("H3_1_T1 | Rook_Moves")
   public void H3_1_T1() {
     initTest();
-    for (Task1Trace trace : traces) {
+    if (defaultSizeTraces.size() < RUNS_WITH_EIGHT * 5 / 6) {
+      fail("Not enough test runs were successful (even with the default 8x8 world size) to evaluate the robots behavior");
+    }
+    for (Task1Trace trace : defaultSizeTraces) {
       assertFalse(trace.rook.getTransitions().isEmpty(), "Rook did not do any actions.");
     }
   }
@@ -384,7 +408,10 @@ public class TutorTests {
   @DisplayName("H3_2_T1 | Bishop_Moves")
   public void H3_2_T1() {
     initTest();
-    for (Task1Trace trace : traces) {
+    if (defaultSizeTraces.size() < RUNS_WITH_EIGHT * 5 / 6) {
+      fail("Not enough test runs were successful (even with the default 8x8 world size) to evaluate the robots behavior");
+    }
+    for (Task1Trace trace : defaultSizeTraces) {
       var consecutiveRook = 0;
       var curBishopIndex = 0;
       var transitions = trace.bishop.getTransitions();
@@ -422,6 +449,7 @@ public class TutorTests {
 
   /**
    * Verifies correct function of bishop (excluding interactions with coins)
+   *
    * @param inverted if true assumes move -> turn right -> move -> turn left instead of the detailed description
    */
   private void bishopMovesCorrectly(boolean inverted) {
@@ -441,14 +469,9 @@ public class TutorTests {
       List<Transition> bishop = trace.bishop.getTransitions();
       for (int j = 0; j < bishop.size() - 1; j++) {
         Transition t = bishop.get(j);
-        if (t.action == Transition.RobotAction.PICK_COIN) {
-          if (isSecondStep) {
-            fail("Bishop should only pick up coins after each iteration of the bishop loop, not after the first step.");
-          } else {
-            continue;
-          }
-        }
-        if (t.action == Transition.RobotAction.PUT_COIN) {
+        if (t.action == Transition.RobotAction.PICK_COIN || t.action == Transition.RobotAction.PUT_COIN) {
+          isSecondStep = false;
+          expectedTurns = 0;
           continue;
         }
         if (t.action != Transition.RobotAction.TURN_LEFT && expectedTurns != 0) {
@@ -489,6 +512,7 @@ public class TutorTests {
     flagFailure(false);
     bishopActsCorrectly(false);
   }
+
   @Test
   @DisplayName("H3_2_T3_2 | Bishop_Acts_Correctly")
   public void H3_2_T3_2() {
@@ -500,12 +524,16 @@ public class TutorTests {
 
   /**
    * Verifies correct function of bishop (including interactions with coins)
+   *
    * @param inverted if true assumes move -> turn right -> move -> turn left instead of the detailed description
    */
   private void bishopActsCorrectly(boolean inverted) {
     var rightTurn = inverted ? 1 : 3;
     var leftTurn = inverted ? 3 : 1;
-    for (Task1Trace trace : traces) {
+    if (defaultSizeTraces.size() < RUNS_WITH_EIGHT * 5 / 6) {
+      fail("Not enough test runs were successful (even with the default 8x8 world size) to evaluate the robots behavior");
+    }
+    for (Task1Trace trace : defaultSizeTraces) {
       int col = trace.width;
       int row = trace.height;
       var consecutiveRook = 0;
@@ -539,6 +567,11 @@ public class TutorTests {
         while (dropCoinsPointer < dropCoins.size() && t.step > dropCoins.get(dropCoinsPointer).step) {
           coins[dropCoins.get(dropCoinsPointer).robot.getX()][dropCoins.get(dropCoinsPointer).robot.getY()]++;
           dropCoinsPointer++;
+        }
+        if (t.action == Transition.RobotAction.PICK_COIN) {
+          if (isSecondStep) {
+            fail("Bishop should only pick up coins after each iteration of the bishop loop, not after the first step.");
+          }
         }
         if (t.action != Transition.RobotAction.TURN_LEFT && expectedTurns != 0) {
           fail("Expected more turns for bishop");
@@ -580,7 +613,10 @@ public class TutorTests {
   public void H3_3_T1() {
     initTest();
     flagFailure(false);
-    for (var trace : traces) {
+    if (defaultSizeTraces.size() < RUNS_WITH_EIGHT * 5 / 6) {
+      fail("Not enough test runs were successful (even with the default 8x8 world size) to evaluate the robots behavior");
+    }
+    for (Task1Trace trace : defaultSizeTraces) {
       List<Transition> rookTransitions = trace.rook.getTransitions();
       for (int i = 0; i < rookTransitions.size() - 2; i++) {
         Transition trans = rookTransitions.get(i);
