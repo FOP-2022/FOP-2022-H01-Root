@@ -1,8 +1,8 @@
 package h01;
 
 import org.sourcegrade.jagr.api.rubric.*;
+import org.sourcegrade.jagr.api.testing.ClassTransformer;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
-import org.sourcegrade.insnreplacer.ReplacementTransformerKt;
 
 import javax.swing.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -162,7 +162,6 @@ public class H01_RubricProvider implements RubricProvider {
       .build()
     ).build();
 
-
   public static final Criterion HX_LOW = Criterion.builder()
     .shortDescription("Von 100 Test Runs laufen mindestens 30 ohne Exceptions")
     .maxPoints(0)
@@ -194,7 +193,6 @@ public class H01_RubricProvider implements RubricProvider {
       HX_HIGH
     )
     .build();
-
 
   public static final Criterion H1 = Criterion.builder()
     .shortDescription("H1 – Initialisieren vor der Hauptschleife")
@@ -246,7 +244,7 @@ public class H01_RubricProvider implements RubricProvider {
 
   @Override
   public void configure(RubricConfiguration configuration) {
-    configuration.addTransformer(ReplacementTransformerKt.create(ThreadLocalRandomTester.class, ThreadLocalRandom.class));
-    configuration.addTransformer(ReplacementTransformerKt.create(JOptionPaneTester.class, JOptionPane.class));
+    configuration.addTransformer(ClassTransformer.replacement(ThreadLocalRandomTester.class, ThreadLocalRandom.class));
+    configuration.addTransformer(ClassTransformer.replacement(JOptionPaneTester.class, JOptionPane.class));
   }
 }

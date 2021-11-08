@@ -196,7 +196,6 @@ public class TutorTests {
     return new Task1Trace(rook, bishop, width, height);
   }
 
-
   @AfterAll
   static void restoreStreams() {
     System.setOut(originalOut);
@@ -520,7 +519,6 @@ public class TutorTests {
     flagFailure(false);
     bishopActsCorrectly(true);
   }
-
 
   /**
    * Verifies correct function of bishop (including interactions with coins)

@@ -1,24 +1,22 @@
 package h01;
 
-import org.sourcegrade.insnreplacer.ThreadLocalInstanceFactory;
-
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ThreadLocalRandomTester {
-  private static final ThreadLocalInstanceFactory<ThreadLocalRandomTester> factory = new ThreadLocalInstanceFactory<>();
+  private static final InheritableThreadLocal<ThreadLocalRandomTester> factory = new InheritableThreadLocal<>();
 
   private final HashMap<Range, ThreadLocalRange> usedRanges = new HashMap<>();
 
   public static void initialize() {
-    factory.setValue(new ThreadLocalRandomTester());
+    factory.set(new ThreadLocalRandomTester());
   }
 
   /**
    * Replaces {@link ThreadLocalRandom#current()}
    */
   public static ThreadLocalRandomTester current() {
-    return factory.getValue();
+    return factory.get();
   }
 
   /**
