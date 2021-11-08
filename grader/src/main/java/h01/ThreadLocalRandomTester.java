@@ -39,4 +39,39 @@ public class ThreadLocalRandomTester {
   public boolean nextBoolean() {
     return nextInt(0, 2) != 0;
   }
+
+  /**
+   * Replaces {@link ThreadLocalRandom#nextInt()}
+   */
+  public int nextInt() {
+    return nextInt(0, 200);
+  }
+
+  /**
+   * Replaces {@link ThreadLocalRandom#nextFloat()}
+   */
+  public float nextFloat() {
+    return ThreadLocalRandom.current().nextFloat();
+  }
+
+  /**
+   * Replaces {@link ThreadLocalRandom#nextDouble()}
+   */
+  public double nextDouble() {
+    return ThreadLocalRandom.current().nextDouble();
+  }
+
+  /**
+   * Replaces {@link ThreadLocalRandom#nextDouble(double, double)}
+   */
+  public double nextDouble(double a, double b) {
+    return ThreadLocalRandom.current().nextDouble(a, b);
+  }
+
+  /**
+   * Replaces {@link ThreadLocalRandom#nextDouble(double)}
+   */
+  public double nextDouble(double a) {
+    return ThreadLocalRandom.current().nextDouble(a);
+  }
 }

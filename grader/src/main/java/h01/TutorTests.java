@@ -117,7 +117,17 @@ public class TutorTests {
         var trace = fillTrace(robots, columns.get(i), rows.get(i));
         traces.add(trace);
       } catch (Exception e) {
-        traces.add(new Task1Trace(e, columns.get(i), rows.get(i)));
+        RookAndBishop secEnvironment = new RookAndBishop(rows.get(i), columns.get(i), 0, false);
+        var tutorEnvironment = new TutorRookAndBishop(secEnvironment, columns.get(i), rows.get(i), null, null);
+        try {
+          tutorEnvironment.init();
+          tutorEnvironment.execute();
+          var robots = getRobots(World.getGlobalWorld());
+          var trace = fillTrace(robots, columns.get(i), rows.get(i));
+          traces.add(trace);
+        } catch (Exception e2) {
+          traces.add(new Task1Trace(e2, columns.get(i), rows.get(i)));
+        }
       }
     }
     var workingTraces = traces.stream().filter(trace -> trace.e == null).collect(Collectors.toList());
