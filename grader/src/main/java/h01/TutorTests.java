@@ -590,11 +590,6 @@ public class TutorTests {
     flagFailure(false);
     List<Task1Trace> transitionTraces = traces.subList(0, RUNS_WITH_TRANSITION);
     String out = outContent.toString();
-    try (PrintStream ps = new PrintStream(new FileOutputStream("filename.txt"))) {
-      ps.print(out);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
     System.setOut(originalOut);
     var results = Arrays.stream(out.split("gewo")).filter(s -> s.contains(ROOK_WIN) || s.contains(BISHOP_WIN))
       .collect(Collectors.toList());
