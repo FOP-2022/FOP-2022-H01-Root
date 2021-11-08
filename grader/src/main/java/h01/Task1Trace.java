@@ -25,7 +25,9 @@ public class Task1Trace {
     this.bishop = bishop;
     this.width = width;
     this.height = height;
-    if (Stream.concat(rook.getTransitions().stream(), bishop.getTransitions().stream())
+    if (rook == null || bishop == null) {
+      this.e = new RuntimeException("Either Rook or Bishop were not created");
+    } else if (Stream.concat(rook.getTransitions().stream(), bishop.getTransitions().stream())
       .anyMatch(transition -> transition.action == Transition.RobotAction.SET_X ||
         transition.action == Transition.RobotAction.SET_Y)) {
       this.e = new RuntimeException("This particular run made use of the banned methods set_x or set_y");
